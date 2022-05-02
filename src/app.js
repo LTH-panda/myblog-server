@@ -3,6 +3,7 @@ const fs = require("fs");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
+const jwtMiddleware = require("./lib/jwtMiddleware");
 const api = require("./api");
 
 dotenv.config();
@@ -25,12 +26,14 @@ switch (NODE_ENV) {
 }
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(jwtMiddleware);
 mongoose
   .connect(MONGO_URI)
   .then(() => console.log("mongodb successfully connected"))
   .catch((e) => console.error(e));
 
 // routes
+
 app.use("/api", api);
 
 app.listen(PORT, () => console.log(`express is listening on ${PORT}`));

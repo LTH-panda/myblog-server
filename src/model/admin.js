@@ -1,0 +1,41 @@
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { Schema } = mongoose;
+
+const AdminSchema = new Schema({
+  username: String,
+  hashedPassword: String,
+});
+
+AdminSchema.methods.setPassword = async function (password) {
+  const hash = await bcrypt.hash(password, 10);
+  this.hashedPassword = hash;
+};
+
+AdminSchema.methods.checkPassword = async function (password) {
+  const result = await bcrypt.compare(password, this.hashedPassword);
+  return result;
+};
+
+AdminSchema.methods.generateToken = function () {
+  const token = jwt.sign(
+    {
+      _id: this.id,
+      username: this.username,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "7d",
+    }
+  );
+
+  return token;
+};
+
+AdminSchema.statics.findByUsername = function (username) {
+  return this.findOne({ username });
+};
+
+const Admin = mongoose.model("Admin", AdminSchema);
+module.exports = Admin;
