@@ -21,7 +21,7 @@ exports.login = async (req, res) => {
       signed: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
-    res.send("login");
+    res.send(admin.serialize());
   } catch (e) {
     res.status(500).send(e);
   }
@@ -58,6 +58,7 @@ exports.register = async (req, res) => {
       signed: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
+    res.send(admin.serialize());
   } catch (e) {
     res.status(500).send(e);
   }
