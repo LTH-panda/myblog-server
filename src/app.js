@@ -2,13 +2,14 @@ const express = require("express");
 const fs = require("fs");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
+const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const jwtMiddleware = require("./lib/jwtMiddleware");
 const api = require("./api");
 
 dotenv.config();
 const app = express();
-const { PORT, MONGO_URI, NODE_ENV } = process.env;
+const { PORT, MONGO_URI, NODE_ENV, COOKIE_SECRET } = process.env;
 
 // middleware
 switch (NODE_ENV) {
@@ -26,6 +27,7 @@ switch (NODE_ENV) {
 }
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser(COOKIE_SECRET));
 app.use(jwtMiddleware);
 mongoose
   .connect(MONGO_URI)

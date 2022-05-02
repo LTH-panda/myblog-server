@@ -15,6 +15,7 @@ exports.login = async (req, res) => {
     const valid = await admin.checkPassword(password);
     if (!valid) return res.status(401).send("not authorized");
 
+    const token = admin.generateToken();
     res.cookie("access_token", token, {
       httpOnly: true,
       signed: true,
