@@ -26,10 +26,12 @@ exports.login = async (req, res) => {
     res.status(500).send(e);
   }
 };
+
 exports.logout = async (req, res) => {
   res.cookie("access_token", null);
   res.send("logout");
 };
+
 exports.register = async (req, res) => {
   const schema = Joi.object().keys({
     username: Joi.string().required(),
@@ -62,4 +64,9 @@ exports.register = async (req, res) => {
   } catch (e) {
     res.status(500).send(e);
   }
+};
+
+exports.check = async (req, res) => {
+  if (!res.locals.user) return res.status(401).send("no user");
+  res.send(res.locals.user);
 };
